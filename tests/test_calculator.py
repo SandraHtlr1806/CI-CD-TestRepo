@@ -97,4 +97,3 @@ def test_currency_api_failure(mock_get):
 def test_currency_real():
     result = Calculator.convert_currency(5, "EUR", "USD")
     assert result >= 0
-    
