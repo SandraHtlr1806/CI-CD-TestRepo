@@ -1,0 +1,11 @@
+pipeline:
+  test:
+    image: python:3.11
+    commands:
+      - pip install -r requirements.txt
+      - flake8 .
+      - pytest
+
+// No need for a workflow definition in Woodpecker CI, as it runs the pipeline by default.
+// In Woodpecker CI, we define a pipeline that uses a Python 3.11 image to run our tests. 
+// The pipeline includes commands to install dependencies, lint the code, and run tests.
