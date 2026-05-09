@@ -44,3 +44,4 @@ class Calculator:
         response = requests.get(url, timeout=5)
         data = response.json()
         return data.get("result", 0)
+    

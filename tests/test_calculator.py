@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import patch, Mock
+from unittest.mock import patch
 from app.calculator import Calculator
 
 
@@ -85,7 +85,6 @@ def test_currency_api_returns_no_result(mock_get):
 @patch("app.calculator.requests.get")
 def test_currency_api_failure(mock_get):
     mock_get.side_effect = Exception("API error")
-    
     with pytest.raises(Exception):
         Calculator.convert_currency(5, "EUR", "USD")
 
@@ -98,3 +97,4 @@ def test_currency_api_failure(mock_get):
 def test_currency_real():
     result = Calculator.convert_currency(5, "EUR", "USD")
     assert result >= 0
+    
