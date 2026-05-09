@@ -25,6 +25,6 @@ workflows:
     jobs:
       - test
 
-// In CircleCI, we define a job that uses a Python 3.11 Docker image to run our tests. 
-// The job includes steps to check out the code, install dependencies, lint the code, and run tests. 
-// We also define a workflow to execute this job, which is necessary in CircleCI to orchestrate the execution of jobs.
+# In CircleCI, we define a job that uses a Python 3.11 Docker image to run our tests. 
+# The job includes steps to check out the code, install dependencies, lint the code, and run tests. 
+# We also define a workflow to execute this job, which is necessary in CircleCI to orchestrate the execution of jobs.

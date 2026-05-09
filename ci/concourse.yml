@@ -23,6 +23,6 @@ jobs:
                 flake8 repo
                 pytest repo
 
-// In Concourse CI, we define a job that includes a task to run our tests. 
-// The task uses a Python 3.11 image and executes the necessary commands to install dependencies, lint the code, and run tests. 
-// We also need to define a workflow to execute this job, which is not shown here but would typically be included in a complete Concourse CI configuration.
+# In Concourse CI, we define a job that includes a task to run our tests. 
+# The task uses a Python 3.11 image and executes the necessary commands to install dependencies, lint the code, and run tests. 
+# We also need to define a workflow to execute this job, which is not shown here but would typically be included in a complete Concourse CI configuration.
