@@ -4,7 +4,7 @@ clone:
     settings:
       partial: false
 
-pipeline:
+steps:
   test:
     image: python:3.11
     commands:
