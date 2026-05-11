@@ -27,10 +27,14 @@ services:
     restart: always
     depends_on:
       - woodpecker-server
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     environment:
       - WOODPECKER_SERVER=woodpecker-server:9000
       - WOODPECKER_AGENT_SECRET=supersecret_wechsel_mich
       - WOODPECKER_BACKEND=docker
+      - WOODPECKER_DOCKER_DNS=8.8.8.8,1.1.1.1
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
