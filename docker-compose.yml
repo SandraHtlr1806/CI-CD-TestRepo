@@ -22,21 +22,21 @@ services:
       - woodpecker-data:/var/lib/woodpecker
 
   woodpecker-agent:
-    image: woodpeckerci/woodpecker-agent:v3.14.0
-    container_name: woodpecker-agent
-    restart: always
-    depends_on:
-      - woodpecker-server
-    dns:
-      - 8.8.8.8
-      - 1.1.1.1
-    environment:
-      - WOODPECKER_SERVER=woodpecker-server:9000
-      - WOODPECKER_AGENT_SECRET=supersecret_wechsel_mich
-      - WOODPECKER_BACKEND=docker
-      - WOODPECKER_DOCKER_DNS=8.8.8.8,1.1.1.1
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      image: woodpeckerci/woodpecker-agent:v3.14.0
+      container_name: woodpecker-agent
+      restart: always
+      depends_on:
+        - woodpecker-server
+      environment:
+        - WOODPECKER_SERVER=woodpecker-server:9000
+        - WOODPECKER_AGENT_SECRET=supersecret_wechsel_mich
+        - WOODPECKER_BACKEND=docker
+        # Zwinge die Pipeline-Container in das Standard-Bridge-Netzwerk
+        - WOODPECKER_DOCKER_NETWORK=bridge 
+        # Wir lassen den DNS-Server trotzdem als Backup drin
+        - WOODPECKER_DOCKER_DNS=8.8.8.8
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
 
 volumes:
   woodpecker-data:
