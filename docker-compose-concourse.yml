@@ -1,0 +1,54 @@
+services:
+  postgres:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: concourse
+      POSTGRES_PASSWORD: concourse
+      POSTGRES_DB: concourse
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U concourse"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  concourse-web:
+    image: concourse/concourse:8.2.0
+    command: web
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./concourse-keys:/concourse-keys
+    environment:
+      CONCOURSE_POSTGRES_HOST: postgres
+      CONCOURSE_POSTGRES_USER: concourse
+      CONCOURSE_POSTGRES_PASSWORD: concourse
+      CONCOURSE_POSTGRES_DATABASE: concourse
+      CONCOURSE_EXTERNAL_URL: http://localhost:8080
+      CONCOURSE_ADD_LOCAL_USER: test:test
+      CONCOURSE_MAIN_TEAM_LOCAL_USER: test
+      CONCOURSE_SESSION_SIGNING_KEY: /concourse-keys/session_key
+      CONCOURSE_TSA_HOST_KEY: /concourse-keys/tsa_host_key
+
+  concourse-worker:
+    image: concourse/concourse:8.2.0
+    command: worker
+    privileged: true
+    depends_on:
+      - concourse-web
+    volumes:
+      - ./concourse-keys:/concourse-keys
+      - concourse-worker-data:/var/lib/concourse
+    environment:
+      CONCOURSE_TSA_HOST: concourse-web:2222
+      CONCOURSE_TSA_PUBLIC_KEY: /concourse-keys/tsa_host_key.pub
+      CONCOURSE_TSA_WORKER_PRIVATE_KEY: /concourse-keys/worker_key
+      # Hier liegt die Lösung: CONTAINERD statt GARDEN
+      CONCOURSE_CONTAINERD_DNS_SERVER: 8.8.8.8
+      CONCOURSE_CONTAINERD_MTU: 1400
+      CONCOURSE_WORK_DIR: /var/lib/concourse
+
+volumes:
+  concourse-worker-data:

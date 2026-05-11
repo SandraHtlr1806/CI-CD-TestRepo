@@ -1,54 +1,38 @@
+version: "3.8"
+
 services:
-  postgres:
-    image: postgres:14
-    environment:
-      POSTGRES_USER: concourse
-      POSTGRES_PASSWORD: concourse
-      POSTGRES_DB: concourse
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U concourse"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
-  concourse-web:
-    image: concourse/concourse:8.2.0
-    command: web
+  woodpecker-server:
+    image: woodpeckerci/woodpecker-server:v3.14.0
+    container_name: woodpecker-server
+    restart: always
     ports:
-      - "8080:8080"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    volumes:
-      - ./concourse-keys:/concourse-keys
-    dns:
-      - 8.8.8.8
-      - 1.1.1.1
+      - "8000:8000"
     environment:
-      CONCOURSE_POSTGRES_HOST: postgres
-      CONCOURSE_POSTGRES_USER: concourse
-      CONCOURSE_POSTGRES_PASSWORD: concourse
-      CONCOURSE_POSTGRES_DATABASE: concourse
+      - WOODPECKER_HOST=http://woodpecker.sandra.run
+      - WOODPECKER_OPEN=true
+      - WOODPECKER_ADMIN=SandraHtlr1806 # Dein exakter GitHub-Name
+      - WOODPECKER_AGENT_SECRET=supersecret_wechsel_mich
 
-      CONCOURSE_EXTERNAL_URL: http://localhost:8080
-      CONCOURSE_ADD_LOCAL_USER: test:test
-      CONCOURSE_MAIN_TEAM_LOCAL_USER: test
-
-      CONCOURSE_SESSION_SIGNING_KEY: /concourse-keys/session_key
-      CONCOURSE_TSA_HOST_KEY: /concourse-keys/tsa_host_key
-
-  concourse-worker:
-    image: concourse/concourse:8.2.0
-    command: worker
-    privileged: true
-    depends_on:
-      - concourse-web
+      - WOODPECKER_GITHUB=true
+      - WOODPECKER_GITHUB_CLIENT=Ov23liHJYvEg1YTICra3
+      - WOODPECKER_GITHUB_SECRET=344e70bd617c661107cc4675458b4965c0751484
+      - WOODPECKER_SKIP_WEBHOOK_CREATION=true
+      - WOODPECKER_DATABASE_DATASOURCE=/var/lib/woodpecker/woodpecker.sqlite
     volumes:
-      - ./concourse-keys:/concourse-keys
-    dns:
-      - 8.8.8.8
-      - 1.1.1.1
+      - woodpecker-data:/var/lib/woodpecker
+
+  woodpecker-agent:
+    image: woodpeckerci/woodpecker-agent:v3.14.0
+    container_name: woodpecker-agent
+    restart: always
+    depends_on:
+      - woodpecker-server
     environment:
-      CONCOURSE_TSA_HOST: concourse-web:2222
-      CONCOURSE_TSA_PUBLIC_KEY: /concourse-keys/tsa_host_key.pub
-      CONCOURSE_TSA_WORKER_PRIVATE_KEY: /concourse-keys/worker_key
+      - WOODPECKER_SERVER=woodpecker-server:9000
+      - WOODPECKER_AGENT_SECRET=supersecret_wechsel_mich
+      - WOODPECKER_BACKEND=docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+  woodpecker-data:
