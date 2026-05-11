@@ -1,9 +1,3 @@
-clone:
-  git:
-    image: woodpeckerci/plugin-git
-    settings:
-      partial: false
-
 steps:
   test:
     image: python:3.11
