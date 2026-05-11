@@ -21,6 +21,9 @@ services:
         condition: service_healthy
     volumes:
       - ./concourse-keys:/concourse-keys
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     environment:
       CONCOURSE_POSTGRES_HOST: postgres
       CONCOURSE_POSTGRES_USER: concourse
@@ -42,6 +45,9 @@ services:
       - concourse-web
     volumes:
       - ./concourse-keys:/concourse-keys
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     environment:
       CONCOURSE_TSA_HOST: concourse-web:2222
       CONCOURSE_TSA_PUBLIC_KEY: /concourse-keys/tsa_host_key.pub
