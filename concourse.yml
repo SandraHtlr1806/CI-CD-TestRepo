@@ -1,15 +1,25 @@
+resources:
+  - name: repo
+    type: git
+    source:
+      uri: https://github.com/SandraHtlr1806/CI-CD-TestRepo.git
+      branch: main
+
 jobs:
   - name: test
     plan:
       - get: repo
+        trigger: true
+
       - task: run-tests
         config:
           platform: linux
+
           image_resource:
             type: registry-image
             source:
               repository: python
-              tag: 3.11
+              tag: "3.11"
 
           inputs:
             - name: repo
