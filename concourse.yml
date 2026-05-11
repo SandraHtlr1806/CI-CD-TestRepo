@@ -27,11 +27,12 @@ jobs:
           run:
             path: sh
             args:
-              - -c
+              - -exc
               - |
+                pip install --upgrade pip
                 pip install -r repo/requirements.txt
-                flake8 repo
-                pytest repo
+                python -m flake8 repo
+                python -m pytest repo
 
 # In Concourse CI, we define a job that includes a task to run our tests. 
 # The task uses a Python 3.11 image and executes the necessary commands to install dependencies, lint the code, and run tests. 
